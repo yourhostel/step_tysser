@@ -42,7 +42,9 @@ Vagrant.configure("2") do |config|
 
       # Запуск установки Prometheus
       vm2.vm.provision "shell", path: "provisioning/prometheus_install.sh"
+
+      # Запуск установки Alert Manager
+      vm2.vm.provision "shell", path: "provisioning/alertmanager_install.sh"
   end
 
-  # Загальні налаштування, застосовні до обох машин, якщо потрібні
 end
