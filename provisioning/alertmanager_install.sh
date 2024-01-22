@@ -27,24 +27,35 @@ sudo cp alertmanager-0.21.0.linux-amd64/amtool /usr/local/bin/
 # Створюємо базовий конфігураційний файл для Alert Manager
 cat <<EOF | sudo tee /etc/alertmanager/alertmanager.yml
 global:
-  smtp_smarthost: '${ALERTMANAGER_SMTP_SMARTHOST}'
-  smtp_from: '${ALERTMANAGER_SMTP_FROM}'
-  smtp_auth_username: '${ALERTMANAGER_SMTP_AUTH_USERNAME}'
-  smtp_auth_password: '${ALERTMANAGER_SMTP_AUTH_PASSWORD}'
-  smtp_require_tls: ${ALERTMANAGER_SMTP_REQUIRE_TLS}
+  resolve_timeout: 1m
 
 route:
   group_by: ['alertname']
   group_wait: 10s
   group_interval: 10s
-  repeat_interval: 1h
-  receiver: 'email_receiver'
+  repeat_interval: 30s
+  receiver: 'gmail-notifications'
 
 receivers:
-- name: 'email_receiver'
+- name: 'gmail-notifications'
   email_configs:
   - to: '${ALERTMANAGER_RECEIVER_EMAIL}'
+    from: '${ALERTMANAGER_SMTP_FROM}'
+    smarthost: '${ALERTMANAGER_SMTP_SMARTHOST:smtp.gmail.com:587}'
+    auth_username: '${ALERTMANAGER_SMTP_AUTH_USERNAME}'
+    auth_identity: '${ALERTMANAGER_SMTP_AUTH_IDENTITY}'
+    auth_password: '${ALERTMANAGER_SMTP_AUTH_PASSWORD}'
     send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: critical
+    target_match:
+      severity: warning
+    equal:
+      - alertname
+      - dev
+      - instance
 EOF
 
 # Створюємо systemd сервіс файл для Alert Manager
