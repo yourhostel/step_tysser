@@ -1,0 +1,27 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-20.04"
+
+  config.vm.define "vm1" do |vm1|
+      vm1.vm.hostname = "vm1"
+      tysser@tysser:~/hw/step_tysser$ ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eno1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether 4c:cc:6a:55:ff:dd brd ff:ff:ff:ff:ff:ff
+3: vboxnet0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 0a:00:27:00:00:00 brd ff:ff:ff:ff:ff:ff
+4: vboxnet1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether 0a:00:27:00:00:01 brd ff:ff:ff:ff:ff:ff
+tysser@tysser:~/hw/step_tysser$
+
+    # Налаштування для провіженінга, наприклад, shell скрипти
+  end
+
+  config.vm.define "vm2" do |vm2|
+      vm2.vm.hostname = "vm2"
+      vm2.vm.network "private_network", type: "dhcp", virtualbox__intnet: "vmnet2", mac: "080027D14C67"
+    # Налаштування для провіженінга, наприклад, shell скрипти
+  end
+
+  # Загальні налаштування, застосовні до обох машин, якщо потрібні
+end
