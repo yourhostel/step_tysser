@@ -71,8 +71,8 @@ groups:
     labels:
       severity: warning
     annotations:
-      summary: "High CPU load detected on \{{ \$labels.instance }}"
-      description: "CPU load is over 10% (current value is: \{{ \$value }}%)"
+      summary: "High CPU load detected on {{ \$labels.instance }}"
+      description: "CPU load is over 10% (current value is: {{ \$value }}%)"
 EOF
 
 # Додавання шляху до файлу правил конфігураційний файл Prometheus
