@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Загружаем переменные среды из файла .env, если он существует
+# Завантажуємо змінні середовища з файлу .env, якщо він існує
 if [ -f /vagrant/.env ]; then
     source /vagrant/.env
     echo "Змінні середовища з файлу .env завантажені в alertmanager_install.sh."
