@@ -5,7 +5,8 @@
 *.swp
 .DS_Store
 Thumbs.db
-
+.vagrant/
+Vagrantfile.save
 # Ігнорувати залежності та віртуальні оточення Python
 __pycache__/
 venv/

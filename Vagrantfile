@@ -40,7 +40,8 @@ Vagrant.configure("2") do |config|
       echo "vagrant:#{ENV['SSH_PASSWORD_VM2']}" | chpasswd
       SHELL
 
-    # Налаштування для провіженінга, наприклад, shell скрипти
+      # Запуск установки Prometheus
+      vm2.vm.provision "shell", path: "provisioning/prometheus_install.sh"
   end
 
   # Загальні налаштування, застосовні до обох машин, якщо потрібні
