@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Загружаем переменные среды из файла .env, если он существует
+if [ -f /vagrant/.env ]; then
+    source /vagrant/.env
+    echo "Змінні середовища з файлу .env завантажені в alertmanager_install.sh."
+    echo "Pозпочато встановлення Alert Manager"
+
 # Завантажуємо і розпаковуємо Alert Manager
 wget https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
 tar xvf alertmanager-0.21.0.linux-amd64.tar.gz
@@ -67,3 +73,7 @@ sudo chown alertmanager:alertmanager /etc/alertmanager/alertmanager.yml
 sudo systemctl daemon-reload
 sudo systemctl enable alertmanager
 sudo systemctl start alertmanager
+
+else
+    echo "Файл .env не був знайдений або недоступний. Встановлення. alertmanager_install.sh перервано."
+fi
