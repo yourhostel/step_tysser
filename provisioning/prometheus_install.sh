@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Установка Prometheus
+echo "Встановлення Prometheus"
 wget https://github.com/prometheus/prometheus/releases/download/v2.26.0/prometheus-2.26.0.linux-amd64.tar.gz
 tar xvf prometheus-2.26.0.linux-amd64.tar.gz
 
@@ -57,6 +58,29 @@ ExecStart=/usr/local/bin/prometheus \
 [Install]
 WantedBy=multi-user.target
 EOF
+
+# Створення файлу правил оповіщення для Prometheus
+echo "Створення файлу правил оповіщення для Prometheus"
+cat <<EOF | sudo tee /etc/prometheus/alert.rules.yml
+groups:
+- name: high_load
+  rules:
+  - alert: HighLoad
+    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 10
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: High CPU load detected on {{ $labels.instance }}
+      description: "CPU load is over 10% (current value is: {{ $value }}%)"
+EOF
+
+# Додавання шляху до файлу правил конфігураційний файл Prometheus
+echo "rule_files:
+  - '/etc/prometheus/alert.rules.yml'" | sudo tee -a /etc/prometheus/prometheus.yml
+
+# Для всіх користувачів, включаючи користувача prometheus
+sudo chmod 644 /etc/prometheus/alert.rules.yml
 
 # Перезавантаження daemon та запуск сервісу
 sudo systemctl daemon-reload
