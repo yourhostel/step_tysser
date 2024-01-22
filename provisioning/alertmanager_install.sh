@@ -60,6 +60,9 @@ ExecStart=/usr/local/bin/alertmanager \
 WantedBy=multi-user.target
 EOF
 
+# Змінюємо власника конфігураційного файлу на alertmanager
+sudo chown alertmanager:alertmanager /etc/alertmanager/alertmanager.yml
+
 # Перезавантажуємо демон systemd, включаємо та запускаємо Alert Manager
 sudo systemctl daemon-reload
 sudo systemctl enable alertmanager
