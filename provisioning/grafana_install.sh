@@ -20,7 +20,7 @@ datasources:
   type: prometheus
   access: proxy
   orgId: 1
-  url: http://localhost:9090
+  url: 192.168.88.241:9100
   isDefault: true
   editable: true
 EOF'
