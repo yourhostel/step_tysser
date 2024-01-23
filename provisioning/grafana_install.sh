@@ -4,9 +4,8 @@
 echo "Установка Grafana..."
 
 # Додавання репозиторію Grafana та ключа GPG
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
-wget -q -O - https://packages.grafana.com/gpg.key | sudo apt-key add -
+curl https://packages.grafana.com/gpg.key | sudo apt-key add -
+echo "deb https://packages.grafana.com/oss/deb stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
 
 # Оновлення списку пакетів та встановлення Grafana
 sudo apt-get update
