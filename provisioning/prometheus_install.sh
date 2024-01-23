@@ -21,13 +21,14 @@ sudo cp -r prometheus-2.26.0.linux-amd64/console_libraries /etc/prometheus
 
 # Створення основного конфігураційного файлу Prometheus
 cat <<EOF | sudo tee /etc/prometheus/prometheus.yml
+---
 global:
   scrape_interval: 15s
 
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['localhost:9093']
 
   - job_name: 'node_exporter'
     static_configs:
@@ -36,6 +37,12 @@ scrape_configs:
   - job_name: 'mysql_exporter'
     static_configs:
       - targets: ['192.168.88.241:9104']
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - 'localhost:9093'
 EOF
 
 # Створення systemd сервісу для Prometheus
@@ -62,17 +69,18 @@ EOF
 # Створення файлу правил оповіщення для Prometheus
 echo "Створення файлу правил оповіщення для Prometheus"
 cat <<EOF | sudo tee /etc/prometheus/alert.rules.yml
+---
 groups:
-- name: high_load
-  rules:
-  - alert: HighLoad
-    expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 10
-    for: 1m
-    labels:
-      severity: warning
-    annotations:
-      summary: "High CPU load detected on {{ \$labels.instance }}"
-      description: "CPU load is over 10% (current value is: {{ \$value }}%)"
+  - name: high_load
+    rules:
+      - alert: HighLoad
+        expr: 100 - (irate(node_cpu_seconds_total{mode="idle"}[1m])) * 100 > 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU load detected on {{ \$labels.instance }}"
+          description: "CPU load is over 10% (current value is: {{ \$value }}%)"
 EOF
 
 # Додавання шляху до файлу правил конфігураційний файл Prometheus
