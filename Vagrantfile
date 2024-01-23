@@ -5,17 +5,24 @@ Dotenv.load
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-20.04"
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
   config.vm.define "vm1" do |vm1|
       vm1.vm.hostname = "vm1"
       # прокидаємо міст у фізичну локальну мережу та харкордим mac
       # для встановлення статики в маршрутизаторі мережі, теж робимо і для VM2
       vm1.vm.network "public_network", bridge: "eno1", mac: "080027D14C66"
+      vm1.vm.provider "virtualbox" do |v|
+            v.memory = 4096
+            v.cpus = 2
+      end
 
       # Встановлення пароля для користувача vagrant зі змінної оточення SSH_PASSWORD_VM1
       vm1.vm.provision "shell", inline: <<-SHELL
         sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
         service ssh restart
-      echo "vagrant:#{ENV['SSH_PASSWORD_VM1']}" | chpasswd
+        echo "vagrant:#{ENV['SSH_PASSWORD_VM1']}" | chpasswd
+        sudo apt-get update
+        sudo apt-get install -y stress yamllint
       SHELL
 
       # Запуск скрипта установки MySQL
@@ -32,12 +39,18 @@ Vagrant.configure("2") do |config|
   config.vm.define "vm2" do |vm2|
       vm2.vm.hostname = "vm2"
       vm2.vm.network "public_network", bridge: "eno1", mac: "080027D14C67"
+      vm1.vm.provider "virtualbox" do |v|
+            v.memory = 4096
+            v.cpus = 2
+      end
 
       # Встановлення пароля для користувача vagrant зі змінної оточення SSH_PASSWORD_VM2
       vm2.vm.provision "shell", inline: <<-SHELL
         sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config
         service ssh restart
-      echo "vagrant:#{ENV['SSH_PASSWORD_VM2']}" | chpasswd
+        echo "vagrant:#{ENV['SSH_PASSWORD_VM2']}" | chpasswd
+        sudo apt-get update
+        sudo apt-get install -y yamllint
       SHELL
 
       # Запуск установки Prometheus
