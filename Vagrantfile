@@ -58,6 +58,9 @@ Vagrant.configure("2") do |config|
 
       # Запуск установки Alert Manager
       vm2.vm.provision "shell", path: "provisioning/alertmanager_install.sh"
+
+      # Додавання скрипта установки Grafana
+      vm2.vm.provision "shell", path: "provisioning/grafana_install.sh"
   end
 
 end
