@@ -28,7 +28,7 @@ global:
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets: ['localhost:9093']
+      - targets: ['localhost:9090']
 
   - job_name: 'node_exporter'
     static_configs:
@@ -38,11 +38,13 @@ scrape_configs:
     static_configs:
       - targets: ['192.168.88.241:9104']
 
+rule_files:
+  - '/etc/prometheus/alert.rules.yml'
+
 alerting:
   alertmanagers:
-  - static_configs:
-    - targets:
-      - 'localhost:9093'
+    - static_configs:
+        - targets: ['localhost:9093']
 EOF
 
 # Створення systemd сервісу для Prometheus
@@ -82,10 +84,6 @@ groups:
           summary: "High CPU load detected on {{ \$labels.instance }}"
           description: "CPU load is over 10% (current value is: {{ \$value }}%)"
 EOF
-
-# Додавання шляху до файлу правил конфігураційний файл Prometheus
-echo "rule_files:
-  - '/etc/prometheus/alert.rules.yml'" | sudo tee -a /etc/prometheus/prometheus.yml
 
 # Для всіх користувачів, включаючи користувача prometheus
 sudo chmod 644 /etc/prometheus/alert.rules.yml
