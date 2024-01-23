@@ -41,7 +41,7 @@ receivers:
   email_configs:
   - to: '${ALERTMANAGER_RECEIVER_EMAIL}'
     from: '${ALERTMANAGER_SMTP_FROM}'
-    smarthost: '${ALERTMANAGER_SMTP_SMARTHOST:smtp.gmail.com:587}'
+    smarthost: '${ALERTMANAGER_SMTP_SMARTHOST}'
     auth_username: '${ALERTMANAGER_SMTP_AUTH_USERNAME}'
     auth_identity: '${ALERTMANAGER_SMTP_AUTH_IDENTITY}'
     auth_password: '${ALERTMANAGER_SMTP_AUTH_PASSWORD}'
