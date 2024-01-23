@@ -26,6 +26,7 @@ sudo cp alertmanager-0.21.0.linux-amd64/amtool /usr/local/bin/
 
 # Створюємо базовий конфігураційний файл для Alert Manager
 cat <<EOF | sudo tee /etc/alertmanager/alertmanager.yml
+---
 global:
   resolve_timeout: 1m
 
@@ -43,7 +44,6 @@ receivers:
     from: '${ALERTMANAGER_SMTP_FROM}'
     smarthost: '${ALERTMANAGER_SMTP_SMARTHOST}'
     auth_username: '${ALERTMANAGER_SMTP_AUTH_USERNAME}'
-    auth_identity: '${ALERTMANAGER_SMTP_AUTH_IDENTITY}'
     auth_password: '${ALERTMANAGER_SMTP_AUTH_PASSWORD}'
     send_resolved: true
 
