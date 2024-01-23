@@ -39,7 +39,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "vm2" do |vm2|
       vm2.vm.hostname = "vm2"
       vm2.vm.network "public_network", bridge: "eno1", mac: "080027D14C67"
-      vm1.vm.provider "virtualbox" do |v|
+      vm2.vm.provider "virtualbox" do |v|
             v.memory = 4096
             v.cpus = 2
       end
