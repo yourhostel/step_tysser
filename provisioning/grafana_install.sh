@@ -25,26 +25,34 @@ datasources:
   editable: true
 EOF'
 
-# Створення файлу конфігурації джерела даних MySQL Exporter
-sudo bash -c 'cat <<EOF > /etc/grafana/provisioning/datasources/mysql-exporter-datasource.yaml
+# Створення папок для дашбордів
+sudo mkdir -p /etc/grafana/provisioning/dashboards
+sudo mkdir -p /var/lib/grafana/dashboards
+
+# Копіювання JSON-файлів дашбордів із спільної папки
+sudo cp /vagrant/dashboards/*.json /var/lib/grafana/dashboards/
+
+# Додавання конфігураційного файлу для автоматичного надання дашбордів
+sudo bash -c 'cat <<EOF > /etc/grafana/provisioning/dashboards/dashboard-providers.yaml
 apiVersion: 1
 
-datasources:
-- name: MySQL Exporter
-  type: prometheus
-  access: proxy
+providers:
+- name: "default"
   orgId: 1
-  url: http://192.168.88.241:9104/metrics
-  isDefault: false
+  folder: ""
+  type: file
+  disableDeletion: false
   editable: true
+  options:
+    path: /var/lib/grafana/dashboards
 EOF'
 
 # Налаштування облікових даних адміністратора
-export GF_SECURITY_ADMIN_USER=admin
-export GF_SECURITY_ADMIN_PASSWORD=1234
+sudo sed -i 's/;admin_user = admin/admin_user = tysser/' /etc/grafana/grafana.ini
+sudo sed -i 's/;admin_password = admin/admin_password = 1234/' /etc/grafana/grafana.ini
 
 # Запуск Grafana
 sudo systemctl enable grafana-server
 sudo systemctl start grafana-server
 
-echo "Grafana установлена и запущена."
+echo "Grafana встановлена та запущена."
