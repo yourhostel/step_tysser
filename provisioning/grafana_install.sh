@@ -37,7 +37,7 @@ sudo bash -c 'cat <<EOF > /etc/grafana/provisioning/dashboards/dashboard-provide
 apiVersion: 1
 
 providers:
-- name: "default"
+- name: default
   orgId: 1
   folder: ""
   type: file
